@@ -126,3 +126,117 @@ describe('Calculate Settlment Amount TEST #1 ', () => {
         expect(res.body.totalSum).toEqual(933.76)
     })
 })
+
+
+describe('Restful APIs TEST #1 ', () => {
+    it('Testcase 11: POST (Insert Ticket)', async () => {
+        const res = await request(app).post('/tickets')
+            .send({
+                "ticketId": "TES2312-32",
+                "price": "203.10",
+                "MDR": "2.0",
+                "currency": "SGD",
+                "travelAgentName": "SPLIT-TEST-AGENT01"
+            })
+        expect(res.body.message).toEqual("success")
+    })
+
+    it('Testcase 12: GET (Retrieve All Tickets)', async () => {
+        const res = await request(app).get('/tickets')
+        expect(res.body.message).toEqual("success")
+    })
+
+    it('Testcase 13: PUT (Update Ticket)', async () => {
+        const res = await request(app).put('/tickets/TES2312-32')
+            .send({
+                "price": "203.20",
+                "MDR": "2.0",
+                "currency": "SGD",
+                "travelAgentName": "SPLIT-TEST-AGENT01"
+            })
+        expect(res.body.message).toEqual("success")
+    })
+
+    it('Testcase 14: DELETE (Delete Ticket)', async () => {
+        const res = await request(app).delete('/tickets/TES2312-32')
+            .send({
+                "ticketId": "TES2312-32"
+            });
+        expect(res.body.message).toEqual("success")
+    })
+})
+
+
+describe('Valid Input Strings TEST #1 ', () => {
+    it('Testcase 15: aabbcc', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "aabbcc"
+            })
+        expect(res.body["compile"]).toBe(true)
+    })
+
+    it('Testcase 16: aabdbcc', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "aabdbcc"
+            })
+        expect(res.body["compile"]).toBe(false)
+    })
+
+    it('Testcase 17: caca', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "caca"
+            })
+        expect(res.body["compile"]).toBe(false)
+    })
+
+    it('Testcase 18: caabbddc', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "caabbddc"
+            })
+        expect(res.body["compile"]).toBe(true)
+    })
+
+    it('Testcase 19: acca', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "acca"
+            })
+        expect(res.body["compile"]).toBe(true)
+    })
+
+    it('Testcase 20: cabbaddc', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "cabbaddc"
+            })
+        expect(res.body["compile"]).toBe(true)
+    })
+
+    it('Testcase 21: caabddc', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "caabddc"
+            })
+        expect(res.body["compile"]).toBe(false)
+    })
+
+    it('Testcase 22: caabdbdc', async () => {
+        const res = await request(app)
+            .post('/tickets/validate')
+            .send({
+                "input": "caabdbdc"
+            })
+        expect(res.body["compile"]).toBe(false)
+    })
+})
